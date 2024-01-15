@@ -12,21 +12,21 @@ float Events::DeltaX = 0.0f;
 float Events::DeltaY = 0.0f;
 float Events::X = 0.0f;
 float Events::Y = 0.0f;
-bool Events::CursorLocked = false;
-bool Events::CursorStarted = false;
+bool Events::IsCursorLocked = false;
+bool Events::IsCursorStarted = false;
 
 #define _MOUSE_BUTTONS 1024
 
 void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos) 
 {
-	if (Events::CursorStarted) 
+	if (Events::IsCursorStarted) 
 	{
 		Events::DeltaX += xpos - Events::X;
 		Events::DeltaY += ypos - Events::Y;
 	}
 	else 
 	{
-		Events::CursorStarted = true;
+		Events::IsCursorStarted = true;
 	}
 	Events::X = xpos;
 	Events::Y = ypos;
@@ -60,6 +60,12 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 	}
 }
 
+void WindowSizeCallback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+	Window::Width = width;
+	Window::Height = height;
+}
+
 int Events::Init() 
 {
 	GLFWwindow* window = Window::window;
@@ -72,6 +78,7 @@ int Events::Init()
 	glfwSetKeyCallback(window, KeyCallback);
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
 	glfwSetCursorPosCallback(window, CursorPositionCallback);
+	glfwSetWindowSizeCallback(window, WindowSizeCallback);
 	return 0;
 }
 
@@ -102,6 +109,11 @@ bool Events::JustClicked(int button)
 {
 	int index = _MOUSE_BUTTONS + button;
 	return Keys[index] && Frames[index] == Current;
+}
+
+void Events::ToogleCursor() {
+	IsCursorLocked = !IsCursorLocked;
+	Window::SetCursorMode(IsCursorLocked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
 void Events::PollEvents() 

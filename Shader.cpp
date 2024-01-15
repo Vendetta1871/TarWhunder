@@ -5,6 +5,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -107,4 +109,10 @@ Shader* LoadShader(std::string vertexFile, std::string fragmentFile)
 	glDeleteShader(fragment);
 
 	return new Shader(id);
+}
+
+void Shader::UniformMatrix(std::string name, glm::mat4 matrix) 
+{
+	GLuint transformLoc = glGetUniformLocation(id, name.c_str());
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }

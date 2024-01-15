@@ -1,13 +1,16 @@
 #include <iostream>
 
-//#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include "Window.h"
 #include "Events.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
 
 int WIDTH = 1280;
 int HEIGHT = 720;
@@ -62,23 +65,76 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	Camera* camera = new Camera(glm::vec3(0, 0, 1), glm::radians(70.0f));
+
+	glm::mat4 model(1.0f);
+	//model = glm::scale(model, glm::vec3(2, 2, 2));
+	//model = glm::rotate(model, 0.5f, glm::vec3(0, 0, 1));
+	model = glm::translate(model, glm::vec3(0.5f, 0, 0));
+
+	float lastTime = glfwGetTime();
+	float delta = 0.0f;
+
+	float camX = 0.0f;
+	float camY = 0.0f;
+
+	float speed = 5;
+
 	while (!Window::GetShouldClose()) 
 	{
-		Events::PollEvents();
+		float currentTime = glfwGetTime();
+		delta = currentTime - lastTime;
+		lastTime = currentTime;
+
 		if (Events::JustPressed(GLFW_KEY_ESCAPE))
 		{
 			Window::SetShouldClose(true);
+		}
+		if (Events::JustPressed(GLFW_KEY_TAB)) {
+			Events::ToogleCursor();
+		}
+
+		if (Events::IsPressed(GLFW_KEY_W)) {
+			camera->Position += camera->Front * delta * speed;
+		}
+		if (Events::IsPressed(GLFW_KEY_S)) {
+			camera->Position -= camera->Front * delta * speed;
+		}
+		if (Events::IsPressed(GLFW_KEY_D)) {
+			camera->Position += camera->Right * delta * speed;
+		}
+		if (Events::IsPressed(GLFW_KEY_A)) {
+			camera->Position -= camera->Right * delta * speed;
+		}
+
+		if (Events::IsCursorLocked) {
+			camY += -Events::DeltaY / Window::Height * 2;
+			camX += -Events::DeltaX / Window::Height * 2;
+
+			if (camY < -glm::radians(89.0f)) {
+				camY = -glm::radians(89.0f);
+			}
+			if (camY > glm::radians(89.0f)) {
+				camY = glm::radians(89.0f);
+			}
+
+			camera->Rotation = glm::mat4(1.0f);
+			camera->Rotate(camY, camX, 0);
 		}
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader->Use();
+		shader->UniformMatrix("model", model);
+		shader->UniformMatrix("projview", 
+			camera->GetProjection()*camera->GetView());
 		texture->Bind();
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 
 		Window::SwapBuffers();
+		Events::PollEvents();
 	}
 
 	delete shader;

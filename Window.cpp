@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 
 GLFWwindow* Window::window;
+int Window::Width;
+int Window::Height;
 
 int Window::Init(int width, int height, const char* title) 
 {
@@ -13,7 +15,7 @@ int Window::Init(int width, int height, const char* title)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (window == nullptr) 
@@ -31,12 +33,19 @@ int Window::Init(int width, int height, const char* title)
 		return -1;
 	}
 	glViewport(0, 0, width, height);
+
+	Window::Width = width;
+	Window::Height = height;
 	return 0;
 }
 
 void Window::Terminate() 
 {
 	glfwTerminate();
+}
+
+void Window::SetCursorMode(int mode) {
+	glfwSetInputMode(window, GLFW_CURSOR, mode);
 }
 
 bool Window::GetShouldClose() 

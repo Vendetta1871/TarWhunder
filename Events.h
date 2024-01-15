@@ -15,8 +15,8 @@ public:
 	static float DeltaY;
 	static float X;
 	static float Y;
-	static bool CursorLocked;
-	static bool CursorStarted;
+	static bool IsCursorLocked;
+	static bool IsCursorStarted;
 
 	static int Init();
 	static void PollEvents();
@@ -26,6 +26,8 @@ public:
 
 	static bool IsClicked(int button);
 	static bool JustClicked(int button);
+
+	static void ToogleCursor();
 };
 
 #endif
