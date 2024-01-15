@@ -1,8 +1,9 @@
-#include <GLFW/glfw3.h>
-#include <string.h>
-
 #include "Events.h"
 #include "Window.h"
+
+#include <string.h>
+
+#include <GLFW/glfw3.h>
 
 bool* Events::Keys;
 uint* Events::Frames;
