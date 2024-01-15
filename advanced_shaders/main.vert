@@ -5,20 +5,18 @@ layout (location = 1) in vec2 v_texCoord;
 layout (location = 2) in vec3 v_normal; 
 
 out vec2 a_texCoord;
-out float a_light;
+
+out vec3 a_fragPos;
+out vec3 a_normal;
 
 uniform mat4 model;
 uniform mat4 projview;
-uniform vec3 lightPos;
 
 void main() {
 	a_texCoord = v_texCoord;
-
-	float ambientStrength = 0.1;
-	vec3 norm = normalize(v_normal);
-	vec3 lightDir = normalize(lightPos - vec3(model * vec4(v_position, 1.0)));
-	float diff = max(dot(norm, lightDir), 0.0);
-	a_light = ambientStrength + diff;
+	
+	a_normal = v_normal;
+	a_fragPos = vec3(model * vec4(v_position, 1.0));
 	
 	gl_Position = projview * model * vec4(v_position, 1.0);
 }

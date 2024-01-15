@@ -11,19 +11,66 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 int WIDTH = 1280;
 int HEIGHT = 720;
 
 float vertixes[] = {
-	-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-	1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-	-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f,
+	-0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  0.0f, -1.0f,
+	0.5f,  -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  0.0f, -1.0f,
 
-	1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-	1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-	-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+	0.5f,  -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  0.0f, -1.0f,
+	-0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  0.0f, -1.0f,
+	0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, 0.0f,  0.0f, -1.0f,
+
+	-0.5f, -0.5f, 0.5f,  0.0f, 0.0f, 0.0f,  0.0f,  1.0f,
+	0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  0.0f,  1.0f,
+	-0.5f, 0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f,  1.0f,
+
+	0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  0.0f,  1.0f,
+	0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f,  0.0f,  1.0f,
+	-0.5f, 0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f,  1.0f,
+	//
+	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  -1.0f, 0.0f,
+	0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  -1.0f, 0.0f,
+	-0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  -1.0f, 0.0f,
+			   
+	-0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  -1.0f, 0.0f,
+	0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  -1.0f, 0.0f,
+	0.5f,  -0.5f, 0.5f,  1.0f, 1.0f, 0.0f,  -1.0f, 0.0f,
+			   
+	-0.5f, 0.5f,  -0.5f, 0.0f, 0.0f, 0.0f,  1.0f,  0.0f,
+	-0.5f, 0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f,  0.0f,
+	0.5f,  0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  1.0f,  0.0f,
+			   
+	-0.5f, 0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f,  0.0f,
+	0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f,  1.0f,  0.0f,
+	0.5f,  0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  1.0f,  0.0f,
+	//
+	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
+	-0.5f, 0.5f,  -0.5f, 1.0f, 0.0f, 1.0f,  0.0f,  0.0f,
+			    
+	-0.5f, 0.5f,  -0.5f, 1.0f, 0.0f, 1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
+	-0.5f, 0.5f,  0.5f,  1.0f, 1.0f, 1.0f,  0.0f,  0.0f,
+			    
+	0.5f,  -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f,  0.0f,
+	0.5f,  0.5f,  -0.5f, 1.0f, 0.0f, -1.0f, 0.0f,  0.0f,
+	0.5f,  -0.5f, 0.5f,  0.0f, 1.0f, -1.0f, 0.0f,  0.0f,
+			    
+	0.5f,  0.5f,  -0.5f, 1.0f, 0.0f, -1.0f, 0.0f,  0.0f,
+	0.5f,  0.5f,  0.5f,  1.0f, 1.0f, -1.0f, 0.0f,  0.0f,
+	0.5f,  -0.5f, 0.5f,  0.0f, 1.0f, -1.0f, 0.0f,  0.0f,
 };
+
+int attrs[] = {
+	3, 2, 3, 0
+}; 
+
+glm::vec3 lightPosition = glm::vec3(5.0f, 2.0f, 5.0f);
 
 int main() 
 {
@@ -47,29 +94,18 @@ int main()
 		return -1;
 	}
 
-	GLuint VAO, VBO; 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
+	Mesh* mesh = new Mesh(vertixes, 36, attrs);
 
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertixes), vertixes, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(0 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
+	glClearColor(117 / 255.0f, 187 / 255.0f, 253 / 255.0f, 1);
 
-	glBindVertexArray(0);
-
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Camera* camera = new Camera(glm::vec3(0, 0, 1), glm::radians(70.0f));
 
 	glm::mat4 model(1.0f);
-	//model = glm::scale(model, glm::vec3(2, 2, 2));
-	//model = glm::rotate(model, 0.5f, glm::vec3(0, 0, 1));
 	model = glm::translate(model, glm::vec3(0.5f, 0, 0));
 
 	float lastTime = glfwGetTime();
@@ -106,6 +142,12 @@ int main()
 		if (Events::IsPressed(GLFW_KEY_A)) {
 			camera->Position -= camera->Right * delta * speed;
 		}
+		if (Events::IsPressed(GLFW_KEY_SPACE)) {
+			camera->Position += camera->Up * delta * speed;
+		}
+		if (Events::IsPressed(GLFW_KEY_LEFT_CONTROL)) {
+			camera->Position -= camera->Up * delta * speed;
+		}
 
 		if (Events::IsCursorLocked) {
 			camY += -Events::DeltaY / Window::Height * 2;
@@ -122,16 +164,15 @@ int main()
 			camera->Rotate(camY, camX, 0);
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader->Use();
 		shader->UniformMatrix("model", model);
 		shader->UniformMatrix("projview", 
 			camera->GetProjection()*camera->GetView());
+		shader->UniformVector("lightPos", lightPosition);
 		texture->Bind();
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
+		mesh->Draw(GL_TRIANGLES);
 
 		Window::SwapBuffers();
 		Events::PollEvents();
@@ -139,8 +180,7 @@ int main()
 
 	delete shader;
 	delete texture;
-	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO);
+	delete mesh;
 
 	Window::Terminate();
 	return 0;

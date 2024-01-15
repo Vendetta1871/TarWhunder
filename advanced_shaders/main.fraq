@@ -1,0 +1,21 @@
+#version 330 core
+
+in vec2 a_texCoord;
+
+in vec3 a_fragPos;
+in vec3 a_normal;
+
+out vec4 f_color;
+
+uniform sampler2D u_texture0;
+uniform vec3 lightPos;
+
+void main() {
+	float ambientStrength = 0.1;
+	vec3 norm = normalize(a_normal);
+	vec3 lightDir = normalize(lightPos - a_fragPos); 
+	float diff = max(dot(norm, lightDir), 0.0);
+
+	vec4 color = texture(u_texture0, a_texCoord);
+	f_color = vec4((ambientStrength + diff) * color.xyz, color.w);
+}

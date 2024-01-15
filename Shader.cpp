@@ -116,3 +116,9 @@ void Shader::UniformMatrix(std::string name, glm::mat4 matrix)
 	GLuint transformLoc = glGetUniformLocation(id, name.c_str());
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }
+
+void Shader::UniformVector(std::string name, glm::vec3 vector)
+{
+	GLuint transformLoc = glGetUniformLocation(id, name.c_str());
+	glUniform3fv(transformLoc, 1, glm::value_ptr(vector));
+}

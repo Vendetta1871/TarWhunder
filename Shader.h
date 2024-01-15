@@ -14,6 +14,7 @@ public:
 
 	void Use();
 	void UniformMatrix(std::string name, glm::mat4 matrix);
+	void UniformVector(std::string name, glm::vec3 vector);
 };
 
 extern Shader* LoadShader(std::string vertexFile, std::string fragmentFile);
