@@ -2,10 +2,11 @@
 
 #include <GL/glew.h>
 
-Mesh::Mesh(const float* buffer, size_t vertixes, const int* attrs) : vertixes(vertixes)
+Mesh::Mesh(const float* buffer, size_t vertixes, const int* attrs) : vertixes(vertixes), attrs(attrs)
 {
 	int vertex_size = 0;
-	for (int i = 0; attrs[i]; i++) {
+	for (int i = 0; attrs[i]; i++) 
+	{
 		vertex_size += attrs[i];
 	}
 
@@ -17,7 +18,8 @@ Mesh::Mesh(const float* buffer, size_t vertixes, const int* attrs) : vertixes(ve
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_size * vertixes, buffer, GL_STATIC_DRAW);
 
 	int offset = 0;
-	for (int i = 0; attrs[i]; i++) {
+	for (int i = 0; attrs[i]; i++) 
+	{
 		int size = attrs[i];
 		glVertexAttribPointer(i, size, GL_FLOAT, GL_FALSE, 
 			vertex_size * sizeof(float), (GLvoid*)(offset * sizeof(float)));
@@ -39,4 +41,14 @@ void Mesh::Draw(unsigned int primitive)
 	glBindVertexArray(vao);
 	glDrawArrays(primitive, 0, vertixes);
 	glBindVertexArray(0);
+}
+
+const int* Mesh::GetAttrs()
+{
+	return attrs;
+}
+
+int Mesh::GetVetixesCount() const
+{
+	return vertixes;
 }

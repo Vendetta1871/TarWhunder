@@ -14,10 +14,9 @@ uniform vec3 lightPos;
 void main() {
 	a_texCoord = v_texCoord;
 
-	float ambientStrength = 0.1;
-	vec3 norm = normalize(v_normal);
+	float ambientStrength = 0.3;
 	vec3 lightDir = normalize(lightPos - vec3(model * vec4(v_position, 1.0)));
-	float diff = max(dot(norm, lightDir), 0.0);
+	float diff = max(dot(v_normal, lightDir), 0.0);
 	a_light = ambientStrength + diff;
 	
 	gl_Position = projview * model * vec4(v_position, 1.0);

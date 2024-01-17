@@ -6,78 +6,29 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "Window.h"
-#include "Events.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "Camera.h"
-#include "Mesh.h"
+#include "system/Window.h"
+#include "system/Events.h"
+#include "system/Camera.h"
+#include "graphics/Shader.h"
+#include "graphics/Texture.h"
+#include "graphics/Mesh.h"
+#include "graphics/RenderMesh.h"
+#include "Terrain.h"
 
-int WIDTH = 1280;
+int WIDTH = 1080;
 int HEIGHT = 720;
 
-float vertixes[] = {
-	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-	-0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-	0.5f,  -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-
-	0.5f,  -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-	-0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-	0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-
-	-0.5f, -0.5f, 0.5f,  0.0f, 0.0f, 0.0f,  0.0f,  1.0f,
-	0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  0.0f,  1.0f,
-	-0.5f, 0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f,  1.0f,
-
-	0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  0.0f,  1.0f,
-	0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f,  0.0f,  1.0f,
-	-0.5f, 0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f,  1.0f,
-	//
-	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  -1.0f, 0.0f,
-	0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  -1.0f, 0.0f,
-	-0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  -1.0f, 0.0f,
-			   
-	-0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  -1.0f, 0.0f,
-	0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  -1.0f, 0.0f,
-	0.5f,  -0.5f, 0.5f,  1.0f, 1.0f, 0.0f,  -1.0f, 0.0f,
-			   
-	-0.5f, 0.5f,  -0.5f, 0.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-	-0.5f, 0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-	0.5f,  0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  1.0f,  0.0f,
-			   
-	-0.5f, 0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-	0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.0f,  1.0f,  0.0f,
-	0.5f,  0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  1.0f,  0.0f,
-	//
-	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-	-0.5f, 0.5f,  -0.5f, 1.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-			    
-	-0.5f, 0.5f,  -0.5f, 1.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-	-0.5f, 0.5f,  0.5f,  1.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-			    
-	0.5f,  -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f,  0.0f,
-	0.5f,  0.5f,  -0.5f, 1.0f, 0.0f, -1.0f, 0.0f,  0.0f,
-	0.5f,  -0.5f, 0.5f,  0.0f, 1.0f, -1.0f, 0.0f,  0.0f,
-			    
-	0.5f,  0.5f,  -0.5f, 1.0f, 0.0f, -1.0f, 0.0f,  0.0f,
-	0.5f,  0.5f,  0.5f,  1.0f, 1.0f, -1.0f, 0.0f,  0.0f,
-	0.5f,  -0.5f, 0.5f,  0.0f, 1.0f, -1.0f, 0.0f,  0.0f,
-};
-
-int attrs[] = {
-	3, 2, 3, 0
-}; 
-
-glm::vec3 lightPosition = glm::vec3(5.0f, 2.0f, 5.0f);
+glm::vec3 lightPosition = glm::vec3(500.0f, 50.0f, 500.0f);
 
 int main() 
 {
 	Window::Init(WIDTH, HEIGHT, "Window");
 	Events::Init();
 
-	Shader* shader = LoadShader("main.vert", "main.fraq");
+	Shader* shader = LoadShader(
+		"shaders/gourad.vert", "shaders/gourad.fraq");
+	Shader* shader1 = LoadShader(
+		"shaders/gourad.vert", "shaders/gourad.fraq");
 	if (shader == nullptr)
 	{
 		std::cerr << "Failed to load shaders" << std::endl;
@@ -85,7 +36,7 @@ int main()
 		return -1;
 	}
 
-	Texture* texture = LoadTexture("img.png");
+	Texture* texture = LoadTexture("resources/img.png");
 	if (texture == nullptr)
 	{
 		std::cerr << "Failed to load texture" << std::endl;
@@ -94,7 +45,13 @@ int main()
 		return -1;
 	}
 
-	Mesh* mesh = new Mesh(vertixes, 36, attrs);
+	//float t = glfwGetTime();
+	Terrain* terrain = TerrainGenerator::CreateTerrain();
+
+	Mesh* mesh = RenderMesh::RenderTerrainMesh(terrain);
+	//Mesh* mesh = RenderMesh::RenderTerrain();
+	//Mesh* mesh = RenderMesh::RenderTerrainBakedLight(lightPosition, 0.1f);
+	//std::cout << glfwGetTime() - t << std::endl;
 
 	glClearColor(117 / 255.0f, 187 / 255.0f, 253 / 255.0f, 1);
 
@@ -103,10 +60,9 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	Camera* camera = new Camera(glm::vec3(0, 0, 1), glm::radians(70.0f));
+	Camera* camera = new Camera(glm::vec3(10, 10, 10), glm::radians(70.0f));
 
 	glm::mat4 model(1.0f);
-	model = glm::translate(model, glm::vec3(0.5f, 0, 0));
 
 	float lastTime = glfwGetTime();
 	float delta = 0.0f;
@@ -116,11 +72,34 @@ int main()
 
 	float speed = 5;
 
+	int frames = 0;
+	float time = 0;
+
 	while (!Window::GetShouldClose()) 
 	{
 		float currentTime = glfwGetTime();
 		delta = currentTime - lastTime;
 		lastTime = currentTime;
+		/* FPS COUNTER
+		if (++frames > 100) 
+		{
+			std::cout << frames / time << std::endl;
+			frames = 0;
+			time = 0;
+		}
+		else 
+		{
+			time += delta;
+		}
+		//*/
+		//*
+		float angle = glm::radians(delta * 100);
+		glm::mat3x3 rot = glm::mat3x3(
+			glm::cos(angle), 0, glm::sin(angle),
+			0, 1, 0,
+			-glm::sin(angle), 0, glm::cos(angle));
+		lightPosition = lightPosition * rot;
+		//*/
 
 		if (Events::JustPressed(GLFW_KEY_ESCAPE))
 		{
@@ -166,13 +145,19 @@ int main()
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader->Use();
+		shader->Use();		
 		shader->UniformMatrix("model", model);
 		shader->UniformMatrix("projview", 
 			camera->GetProjection()*camera->GetView());
 		shader->UniformVector("lightPos", lightPosition);
 		texture->Bind();
 		mesh->Draw(GL_TRIANGLES);
+
+		shader1->Use();
+		shader1->UniformMatrix("model", model);
+		shader1->UniformMatrix("projview",
+			camera->GetProjection() * camera->GetView());
+		shader1->UniformVector("lightPos", lightPosition);
 
 		Window::SwapBuffers();
 		Events::PollEvents();

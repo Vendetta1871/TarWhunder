@@ -6,6 +6,7 @@
 class Mesh
 {
 private:
+	const int* attrs;
 	unsigned int vao;
 	unsigned int vbo;
 	size_t vertixes;
@@ -14,6 +15,8 @@ public:
 	~Mesh();
 
 	void Draw(unsigned int primitive);
+	const int* GetAttrs();
+	int GetVetixesCount() const;
 };
 
 #endif
