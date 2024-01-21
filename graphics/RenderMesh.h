@@ -1,14 +1,17 @@
-#ifndef RENDERMESH_H
-#define RENDERMESH_H
+#ifndef RENDER_MESH_H
+#define RENDER_MESH_H
 
-#include "Mesh.h"
-#include "../Terrain.h"
+class Mesh;
+class Terrain;
+class PhysicalObject;
 
-#include <glm/glm.hpp>
-
-class RenderMesh {
+class RenderMesh 
+{
+private:
+	static float* GetObjectMesh(int n);
 public:
 	static Mesh* RenderTerrainMesh(Terrain* terrain);
+	static Mesh* RenderPhysicalObjectMesh(PhysicalObject* object);
 };
 
 #endif

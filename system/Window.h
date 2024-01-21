@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-class GLFWwindow;
+struct GLFWwindow;
 
 class Window
 {

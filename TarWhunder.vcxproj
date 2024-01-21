@@ -136,27 +136,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="graphics\Mesh.cpp" />
     <ClCompile Include="graphics\RenderMesh.cpp" />
     <ClCompile Include="graphics\Shader.cpp" />
     <ClCompile Include="graphics\Texture.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Math.cpp" />
+    <ClCompile Include="physics\Math.cpp" />
+    <ClCompile Include="physics\PhysicalObject.cpp" />
+    <ClCompile Include="physics\PhysicsProcessing.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="system\Camera.cpp" />
     <ClCompile Include="system\Events.cpp" />
     <ClCompile Include="system\Window.cpp" />
     <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="TerrainGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="graphics\Mesh.h" />
     <ClInclude Include="graphics\RenderMesh.h" />
     <ClInclude Include="graphics\Shader.h" />
     <ClInclude Include="graphics\Texture.h" />
-    <ClInclude Include="Math.h" />
+    <ClInclude Include="ObjectMeshArrays.h" />
+    <ClInclude Include="physics\Math.h" />
+    <ClInclude Include="physics\PhysicalObject.h" />
+    <ClInclude Include="physics\PhysicsProcessing.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="system\Camera.h" />
     <ClInclude Include="system\Events.h" />
     <ClInclude Include="system\Window.h" />
     <ClInclude Include="Terrain.h" />
+    <ClInclude Include="TerrainGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

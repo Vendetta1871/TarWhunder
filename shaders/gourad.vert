@@ -14,7 +14,7 @@ uniform vec3 lightPos;
 void main() {
 	a_texCoord = v_texCoord;
 
-	float ambientStrength = 0.3;
+	float ambientStrength = 0.2;
 	vec3 lightDir = normalize(lightPos - vec3(model * vec4(v_position, 1.0)));
 	float diff = max(dot(v_normal, lightDir), 0.0);
 	a_light = ambientStrength + diff;

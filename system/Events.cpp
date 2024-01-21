@@ -1,9 +1,12 @@
 #include "Events.h"
-#include "Window.h"
 
 #include <string.h>
 
 #include <GLFW/glfw3.h>
+
+#include "Window.h"
+
+#define _MOUSE_BUTTONS 1024
 
 bool* Events::Keys;
 uint* Events::Frames;
@@ -14,8 +17,6 @@ float Events::X = 0.0f;
 float Events::Y = 0.0f;
 bool Events::IsCursorLocked = false;
 bool Events::IsCursorStarted = false;
-
-#define _MOUSE_BUTTONS 1024
 
 void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos) 
 {

@@ -8,13 +8,9 @@ private:
 	const int sz;
 public:
 	Terrain(float** h_map, int size);
-	float** GetHeightMap(int* size);
-};
+	~Terrain();
 
-class TerrainGenerator
-{
-public:
-	static Terrain* CreateTerrain();
+	float** GetHeightMap(int* size);
 };
 
 #endif

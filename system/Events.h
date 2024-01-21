@@ -1,8 +1,6 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-#include "Window.h"
-
 typedef unsigned int uint;
 
 class Events
