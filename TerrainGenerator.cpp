@@ -16,7 +16,7 @@ Terrain* TerrainGenerator::CreateTerrain()
 	h_map[size][0] = 0;
 	h_map[size][size] = 0;
 
-	Math::DiamondSquare(h_map, size, 1, 1, 35, 0.6f);
+	Math::DiamondSquare(h_map, size, 1, 1, 30, 0.5f);
 	h_map = Math::SmoothArray(h_map, size);
 
 	Terrain* terrain = new Terrain(h_map, size);

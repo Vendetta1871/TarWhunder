@@ -30,7 +30,7 @@ Mesh* RenderMesh::RenderTerrainMesh(Terrain* terrain)
 			vertixes[k + 2] = vertixes[k + 26] = (float)z;
 			vertixes[k + 3] = 0.0f;
 			vertixes[k + 4] = 0.0f;
-			n = glm::normalize(Math::GetVertexSumNormal(h_map, size, x, z));
+			n = Math::Normalize(Math::GetVertexSumNormal(h_map, size, x, z));
 			vertixes[k + 5] = vertixes[k + 29] = n.x;
 			vertixes[k + 6] = vertixes[k + 30] = n.y;
 			vertixes[k + 7] = vertixes[k + 31] = n.z;
@@ -39,7 +39,7 @@ Mesh* RenderMesh::RenderTerrainMesh(Terrain* terrain)
 			vertixes[k + 10] = vertixes[k + 42] = (float)(z + 1);
 			vertixes[k + 11] = 0.0f;
 			vertixes[k + 12] = 1.0f;
-			n = glm::normalize(Math::GetVertexSumNormal(h_map, size, x, z + 1));
+			n = Math::Normalize(Math::GetVertexSumNormal(h_map, size, x, z + 1));
 			vertixes[k + 13] = vertixes[k + 45] = n.x;
 			vertixes[k + 14] = vertixes[k + 46] = n.y;
 			vertixes[k + 15] = vertixes[k + 47] = n.z;
@@ -48,7 +48,7 @@ Mesh* RenderMesh::RenderTerrainMesh(Terrain* terrain)
 			vertixes[k + 18] = (float)z;
 			vertixes[k + 19] = 1.0f;
 			vertixes[k + 20] = 0.0f;
-			n = glm::normalize(Math::GetVertexSumNormal(h_map, size, x + 1, z));
+			n = Math::Normalize(Math::GetVertexSumNormal(h_map, size, x + 1, z));
 			vertixes[k + 21] = n.x;
 			vertixes[k + 22] = n.y;
 			vertixes[k + 23] = n.z;
@@ -59,7 +59,7 @@ Mesh* RenderMesh::RenderTerrainMesh(Terrain* terrain)
 			vertixes[k + 34] = (float)(z + 1);
 			vertixes[k + 35] = 0.0f;
 			vertixes[k + 36] = 1.0f;
-			n = glm::normalize(Math::GetVertexSumNormal(h_map, size, x - 1, z + 1));
+			n = Math::Normalize(Math::GetVertexSumNormal(h_map, size, x - 1, z + 1));
 			vertixes[k + 37] = n.x;
 			vertixes[k + 38] = n.y;
 			vertixes[k + 39] = n.z;

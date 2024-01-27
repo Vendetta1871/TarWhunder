@@ -2,8 +2,20 @@
 #define PHYSICS_PROCESSING_H
 
 #include <glm/glm.hpp>
+#include <vector>
 
 class PhysicalObject;
+
+class CollisionInfo {
+public:
+	glm::vec3 p;
+	glm::vec3 n;
+	PhysicalObject* obj0;
+	PhysicalObject* obj1;
+
+	CollisionInfo(glm::vec3 p, glm::vec3 n, PhysicalObject* obj0, PhysicalObject* obj1);
+	~CollisionInfo();
+};
 
 class PhysicsProcessing
 {
@@ -11,13 +23,13 @@ private:
 	static float** h_map;
 	static int h_map_size;
 
-	static int count;
+	static PhysicalObject* terrain;
 
-	static int Collide(glm::vec3* point, glm::vec3* n, float* len);
+	static bool Collide(float dt);
 public:
-	static PhysicalObject* object;
+	static std::vector<PhysicalObject*> object;
 
-	static void InitPhysics(float** height_map, int n, PhysicalObject* object);
+	static void InitPhysics(float** height_map, int n, std::vector<PhysicalObject*>* object);
 
 	static void ComputePhysics(float time);
 };

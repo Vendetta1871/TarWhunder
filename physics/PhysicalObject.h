@@ -3,30 +3,18 @@
 
 #include <glm/glm.hpp>
 
-class ICollidable
-{
-protected:
-	float a;
-	float b;
-	float c;
+class Collider;
 
-	virtual void RecalculateBounds() = 0;
-public:
-	ICollidable(float a, float b, float c);
-
-	glm::vec3 Points[8];
-	int BoundRect[4];
-};
-
-class PhysicalObject : public ICollidable
+class PhysicalObject
 {
 private:
-	void RecalculateBounds();
+	void CheckIfStatic();
 
 public:
 	const int type = 0;
 
 	float M;
+	float M_1;
 	glm::mat3 I_1;
 
 	glm::vec3 r;
@@ -36,12 +24,16 @@ public:
 
 	glm::mat3 w;
 
+	Collider* collider;
+
+	PhysicalObject operator=(const PhysicalObject& object);
 	PhysicalObject(glm::vec3 r, float a, float b, float c, float m);
 
 	void ApplyForce(glm::vec3 force, glm::vec3 point, float dt);
 	void ApplyImpulse(glm::vec3 impulse, glm::vec3 point);
 
 	void Move(float dt);
+	void Move(glm::vec3 dir, float l);
 };
 
 #endif

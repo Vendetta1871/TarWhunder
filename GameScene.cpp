@@ -55,12 +55,14 @@ GameScene::GameScene(int width, int height) : Scene(width, height)
 	terrain = TerrainGenerator::CreateTerrain();
 	terrainMesh = RenderMesh::RenderTerrainMesh(terrain);
 
-	object = new PhysicalObject(glm::vec3(10, 5, 10), 2, 2, 2, 1);
-	objectMesh = RenderMesh::RenderPhysicalObjectMesh(object);
+	for (int i = 0; i < 10; ++i) 
+	{
+		object.push_back(new PhysicalObject(glm::vec3(10, 5 + 7 * i, 10 + 0.8f * i), 2, 2, 2, 1));
+	}
 
 	int n = 0;
 	float** map = terrain->GetHeightMap(&n);
-	PhysicsProcessing::InitPhysics(map, n, object);
+	PhysicsProcessing::InitPhysics(map, n, &object);
 }
 
 GameScene::~GameScene()
@@ -111,11 +113,9 @@ void GameScene::Start()
 		Events::PollEvents();
 
 		PhysicsProcessing::ComputePhysics(delta);
-		delete objectMesh;
-		objectMesh = RenderMesh::RenderPhysicalObjectMesh(object);
 
 		//* FPS COUNTER
-		if (++frames > 500)
+		if (++frames > 1000)
 		{
 			std::cout << frames / time << std::endl;
 			frames = 0;
@@ -128,9 +128,10 @@ void GameScene::Start()
 		//*/
 
 		//* FPS LIMIT
-		while (cps * clock() - currentTime < 1.0f / 140)
+		while (false && delta < 1.0f / 70)
 		{
-			1;
+			currentTime = cps * clock();
+			delta = currentTime - lastTime;
 		}
 		//*/
 	}
@@ -219,7 +220,12 @@ void GameScene::HandleShaders()
 		main_camera->GetProjection() * main_camera->GetView());
 	objectShader->UniformVector("lightPos", light_pos);
 	objectTexture->Bind();
-	objectMesh->Draw(GL_TRIANGLES);
+	for (auto& obj : object)
+	{
+		delete objectMesh;
+		objectMesh = RenderMesh::RenderPhysicalObjectMesh(obj);
+		objectMesh->Draw(GL_TRIANGLES);
+	}
 }
 
 void GameScene::Final() 

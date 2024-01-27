@@ -1,6 +1,7 @@
 #ifndef GAME_SCENE_H
 #define GAME_SCENE_H
 
+#include <vector>
 #include <glm/glm.hpp>
 
 #include "Scene.h"
@@ -31,7 +32,7 @@ private:
 	Terrain* terrain;
 	Mesh* terrainMesh;
 
-	PhysicalObject* object;
+	std::vector<PhysicalObject*> object;
 	Mesh* objectMesh;
 
 	void HandleEvents(float delta);
