@@ -25,6 +25,7 @@ private:
 
 	Shader* terrainShader;
 	Shader* objectShader;
+	Shader* debugShader;
 
 	Texture* terrainTexture;
 	Texture* objectTexture;
@@ -33,11 +34,14 @@ private:
 	Mesh* terrainMesh;
 
 	std::vector<PhysicalObject*> object;
-	Mesh* objectMesh;
+	std::vector<Mesh*> objectMesh;
 
 	void HandleEvents(float delta);
 	void HandleShaders();
 public:
+	bool isDebug;
+	bool isPhysicsPaused;
+
 	GameScene(int width, int height);
 	~GameScene();
 

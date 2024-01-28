@@ -117,8 +117,20 @@ void Shader::UniformMatrix(std::string name, glm::mat4 matrix)
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
+void Shader::UniformMatrix(std::string name, glm::mat3 matrix)
+{
+	GLuint transformLoc = glGetUniformLocation(id, name.c_str());
+	glUniformMatrix3fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
 void Shader::UniformVector(std::string name, glm::vec3 vector)
 {
 	GLuint transformLoc = glGetUniformLocation(id, name.c_str());
 	glUniform3fv(transformLoc, 1, glm::value_ptr(vector));
+}
+
+void Shader::UniformFloat(std::string name, const GLfloat f)
+{
+	GLuint transformLoc = glGetUniformLocation(id, name.c_str());
+	glUniform1fv(transformLoc, 1, &f);
 }

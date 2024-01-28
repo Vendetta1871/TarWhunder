@@ -6,17 +6,6 @@
 
 class PhysicalObject;
 
-class CollisionInfo {
-public:
-	glm::vec3 p;
-	glm::vec3 n;
-	PhysicalObject* obj0;
-	PhysicalObject* obj1;
-
-	CollisionInfo(glm::vec3 p, glm::vec3 n, PhysicalObject* obj0, PhysicalObject* obj1);
-	~CollisionInfo();
-};
-
 class PhysicsProcessing
 {
 private:
@@ -25,7 +14,7 @@ private:
 
 	static PhysicalObject* terrain;
 
-	static bool Collide(float dt);
+	static bool Collide();
 public:
 	static std::vector<PhysicalObject*> object;
 

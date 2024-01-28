@@ -45,7 +45,7 @@ public:
 
 int main() 
 {
-	
+	/*
 	int t = clock();
 	t = clock();
 	for (int j = 0; j < 10000; ++j)
@@ -68,9 +68,16 @@ int main()
 		}
 	}
 	std::cout << "vector push_back: " << clock() - t << std::endl;
+	*/
 
 	Scene* scene = new GameScene(1080, 720);
+	if (scene->status)
+	{
+		return -1;
+	}
 	scene->Start();
 	scene->Final();
 	delete scene;
+
+	return 0;
 }

@@ -1,0 +1,9 @@
+#version 330 core
+
+uniform vec3 clr;
+
+out vec4 f_color;
+
+void main() {
+	f_color = vec4(clr, 1.0);
+}

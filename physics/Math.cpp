@@ -10,7 +10,7 @@
 
 int Math::_antiLoop = 0;
 
-float _getValFromArr(float** arr, int size, int x, int y)
+float Math::_getValFromArr(float** arr, int size, int x, int y)
 {
 	if (x < 0 || x >= size)
 	{
@@ -67,10 +67,10 @@ float _random(int depth, float f)
 void _squareStep(float** p, int n, int x0, int z0, int x3, int z3, int d, int s, float f)
 {
 	float medium = (
-		_getValFromArr(p, n, x0, z0) +
-		_getValFromArr(p, n, x3, z0) +
-		_getValFromArr(p, n, x3, z3) +
-		_getValFromArr(p, n, x0, z3)) / 4.0f;
+		Math::_getValFromArr(p, n, x0, z0) +
+		Math::_getValFromArr(p, n, x3, z0) +
+		Math::_getValFromArr(p, n, x3, z3) +
+		Math::_getValFromArr(p, n, x0, z3)) / 4.0f;
 
 	p[(x0 + x3) / 2][(z0 + z3) / 2] = medium + _random(d, f) * s;
 }
@@ -85,31 +85,31 @@ void _diamondStep(float** p, int n, int x0, int z0, int x3, int z3, int d, int s
 	int iz1 = iz + (z3 - z0);
 
 	float medium = (
-		_getValFromArr(p, n, ix, iz0) +
-		_getValFromArr(p, n, x3, z0) +
-		_getValFromArr(p, n, ix, iz) +
-		_getValFromArr(p, n, x0, z0)) / 4.0f;
+		Math::_getValFromArr(p, n, ix, iz0) +
+		Math::_getValFromArr(p, n, x3, z0) +
+		Math::_getValFromArr(p, n, ix, iz) +
+		Math::_getValFromArr(p, n, x0, z0)) / 4.0f;
 	p[ix][z0] = medium + _random(d, f) * s;
 
 	medium = (
-		_getValFromArr(p, n, x3, z0) +
-		_getValFromArr(p, n, ix1, iz) +
-		_getValFromArr(p, n, x3, z3) +
-		_getValFromArr(p, n, ix, iz)) / 4.0f;
+		Math::_getValFromArr(p, n, x3, z0) +
+		Math::_getValFromArr(p, n, ix1, iz) +
+		Math::_getValFromArr(p, n, x3, z3) +
+		Math::_getValFromArr(p, n, ix, iz)) / 4.0f;
 	p[x3][iz] = medium + _random(d, f) * s;
 
 	medium = (
-		_getValFromArr(p, n, ix, iz) +
-		_getValFromArr(p, n, x3, z3) +
-		_getValFromArr(p, n, ix, iz1) +
-		_getValFromArr(p, n, x0, z3)) / 4.0f;
+		Math::_getValFromArr(p, n, ix, iz) +
+		Math::_getValFromArr(p, n, x3, z3) +
+		Math::_getValFromArr(p, n, ix, iz1) +
+		Math::_getValFromArr(p, n, x0, z3)) / 4.0f;
 	p[ix][z3] = medium + _random(d, f) * s;
 
 	medium = (
-		_getValFromArr(p, n, x0, z0) +
-		_getValFromArr(p, n, ix, iz) +
-		_getValFromArr(p, n, x0, z3) +
-		_getValFromArr(p, n, ix0, iz)) / 4.0f;
+		Math::_getValFromArr(p, n, x0, z0) +
+		Math::_getValFromArr(p, n, ix, iz) +
+		Math::_getValFromArr(p, n, x0, z3) +
+		Math::_getValFromArr(p, n, ix0, iz)) / 4.0f;
 	p[x0][iz] = medium + _random(d, f) * s;
 }
 
@@ -199,91 +199,7 @@ glm::mat3 Math::Reorthogonalize(glm::mat3 m)
 	return glm::mat3(Normalize(a), Normalize(b), Normalize(c));
 }
 
-glm::vec3 _getNormal(glm::vec3* v)
-{
-	float x = GET_NORMAL_X(v[0].x, v[0].y, v[0].z, v[1].x, v[1].y, v[1].z, v[2].x, v[2].y, v[2].z);
-	float y = GET_NORMAL_X(v[0].x, v[0].y, v[0].z, v[1].x, v[1].y, v[1].z, v[2].x, v[2].y, v[2].z);
-	float z = GET_NORMAL_X(v[0].x, v[0].y, v[0].z, v[1].x, v[1].y, v[1].z, v[2].x, v[2].y, v[2].z);
-	return glm::vec3(x, y, z);
-}
-
-bool Math::SAT_OBBOBB(glm::vec3* a, glm::vec3* b, glm::vec3& normal, float& depth)
-{
-	std::vector<glm::vec3> axis {
-		Math::Normalize(a[1] - a[0]),
-		Math::Normalize(a[2] - a[0]),
-		Math::Normalize(a[4] - a[0]),
-		Math::Normalize(b[1] - b[0]),
-		Math::Normalize(b[2] - b[0]),
-		Math::Normalize(b[4] - b[0]),
-	};
-
-	for (int i = 1; i < 4; ++i)
-	{
-		for (int j = 1; j < 4; ++j)
-		{
-			glm::vec3 vec = glm::cross(
-				a[i + i / 3] - a[0], b[j + j / 3] - b[0]);
-			if (glm::length(vec) != 0.0f)
-			{
-				axis.push_back(Math::Normalize(vec));
-			}
-		}
-	}
-
-	depth = FLT_MAX;
-	for (auto& n : axis)
-	{
-		float max_a = 0, max_b = 0;
-		float min_a = FLT_MAX, min_b = FLT_MAX;
-		for (int i = 0; i < 8; ++i)
-		{
-			float p = glm::dot(a[i], n);
-			if (p > max_a)
-			{
-				max_a = p;
-			}
-			if (p < min_a)
-			{
-				min_a = p;
-			}
-			p = glm::dot(b[i], n);
-			if (p > max_b)
-			{
-				max_b = p;
-			}
-			if (p < min_b)
-			{
-				min_b = p;
-			}
-		}
-
-		float l = std::max(max_a, max_b) - std::min(min_a, min_b);
-		float sum = (max_a - min_a) + (max_b - min_b);
-		float d = sum - l;
-		if (d < 0.0f)
-		{
-			return false;
-		}
-
-		if (d > depth)
-		{
-			continue;
-		}
-		depth = d;
-		normal = n;
-		if (max_a > max_b)
-		{
-			normal *= -1.0f;
-		}
-	}
-
-	depth += 0.001f;
-	normal = Math::Normalize(normal);
-	return true;
-}
-
-glm::vec3 _getFurthestPoint(glm::vec3* points, int n, glm::vec3 d)
+glm::vec3 Math::_getFurthestPoint(glm::vec3* points, int n, glm::vec3 d)
 {
 	int ind_max = 0;
 	float max = 0.0f;
@@ -300,181 +216,10 @@ glm::vec3 _getFurthestPoint(glm::vec3* points, int n, glm::vec3 d)
 	return points[ind_max];
 }
 
-std::vector<std::vector<int>> faces{
-	{0, 1, 3, 2},
-	{0, 4, 5, 1},
-	{2, 6, 4, 0},
-	{2, 3, 7, 6},
-	{3, 1, 5, 7},
-	{4, 6, 7, 5},
-};
-
-glm::vec3 Math::GetCollisionPoints_OBBOBB(glm::vec3* a, glm::vec3* b, glm::vec3 n)
-{
-	glm::vec3 p = _getFurthestPoint(a, 8, n);
-	std::vector<glm::vec3> contactPointsA;
-	//std::vector<int> verA;
-	for (int i = 0; i < 8; ++i)
-	{
-		float d = 0 - n.x * p.x - n.y * p.y - n.z * p.z;
-		float distance = n.x * a[i].x + n.y * a[i].y + n.z * a[i].z + d;
-
-		if (std::abs(distance) < 0.005f)
-		{
-			contactPointsA.emplace_back(a[i]);
-			//verA.push_back(i);
-		}
-	}
-
-	glm::vec3 q = _getFurthestPoint(b, 8, -n);
-	std::vector<glm::vec3> contactPointsB;
-	//std::vector<int> verB;
-	for (int i = 0; i < 8; ++i)
-	{
-		float d = 0 - n.x * q.x - n.y * q.y - n.z * q.z;
-		float distance = n.x * b[i].x + n.y * b[i].y + n.z * b[i].z + d;
-
-		if (std::abs(distance) < 0.005f)
-		{
-			contactPointsB.emplace_back(b[i]);
-			//verB.push_back(i);
-		}
-	}
-
-	if (contactPointsA.size() == 1)
-	{
-		return contactPointsA[0];
-	}
-
-	if (contactPointsB.size() == 1)
-	{
-		return contactPointsB[0];
-	}
-
-	//
-
-	if (contactPointsA.size() == 4)
-	{
-		contactPointsA[0] = (contactPointsA[0] + contactPointsA[1]) / 2.0f;
-		contactPointsA[1] = (contactPointsA[2] + contactPointsA[3]) / 2.0f;
-
-		if (glm::length(contactPointsA[0] - contactPointsA[1]) < 0.005f)
-		{
-			glm::vec3 a_dir = Math::Normalize(contactPointsA[2] - contactPointsA[3]);
-			contactPointsA[0] += 1.0f * a_dir;
-			contactPointsA[1] -= 1.0f * a_dir;
-		}
-	}
-
-	if (contactPointsB.size() == 4)
-	{
-		contactPointsB[0] = (contactPointsB[0] + contactPointsB[1]) / 2.0f;
-		contactPointsB[1] = (contactPointsB[2] + contactPointsB[3]) / 2.0f;
-
-		if (glm::length(contactPointsB[0] - contactPointsB[1]) < 0.005f)
-		{
-			glm::vec3 b_dir = Math::Normalize(contactPointsB[2] - contactPointsB[3]);
-			contactPointsB[0] += 1.0f * b_dir;
-			contactPointsB[1] -= 1.0f * b_dir;
-		}
-	}
-
-	//if (contactPointsA.size() == 2 && contactPointsB.size() == 2)
-	glm::vec3 c0 = (contactPointsA[0] + contactPointsA[1]) / 2.0f;
-	glm::vec3 c1 = (contactPointsB[0] + contactPointsB[1]) / 2.0f;
-
-	glm::vec3 a_dir = Math::Normalize(contactPointsA[1] - contactPointsA[0]);
-	float d = glm::dot(c1 - c0, a_dir);
-
-	glm::vec3 point = c0 + d * a_dir;
-
-	return point;
-}
-
-float _getAngle(glm::vec3 a, glm::vec3 b, glm::vec3 o)
+float Math::_getAngle(glm::vec3 a, glm::vec3 b, glm::vec3 o)
 {
 	glm::vec3 ao = Math::Normalize(a - o);
 	glm::vec3 bo = Math::Normalize(b - o);
 	float cos = glm::dot(ao, bo);
 	return std::acos(cos);
-}
-
-std::pair<glm::vec3, glm::vec3> Math::GetCollisionPoints(float** h_map, int h_map_size,
-	glm::vec3* obj, int x0, int x1, int z0, int z1, float& depth)
-{
-	std::vector<glm::vec3> points;
-	std::vector<glm::vec3> normals;
-	std::vector<float> depths;
-
-	for (int i = 0; i < 8; ++i) {
-		int ix, iz;
-		int sign = _getPolygonPos(obj[i].x, obj[i].z, ix, iz);
-
-		glm::vec3 n = Math::GetPolygonNormal(h_map, h_map_size, obj[i].x, obj[i].z);
-		float h_map_s = _getValFromArr(h_map, h_map_size, ix, iz);
-		float d = -(n.x * ix + n.y * h_map_s + n.z * iz);
-		float y = -(n.x * obj[i].x + n.z * obj[i].z + d) / n.y;
-		float dy = y - obj[i].y;
-		if (dy >= 0.0f)
-		{
-			points.emplace_back(obj[i]);
-			normals.push_back(Math::Normalize(n));
-			depths.push_back(dy);
-		}
-	}
-
-	// collision between terrain vertixes and OBB edges
-	for (auto& i : faces)
-	{
-		glm::vec3 a = obj[i[0]];
-		glm::vec3 b = obj[i[1]];
-		glm::vec3 c = obj[i[2]];
-		glm::vec3 d = obj[i[3]];
-
-		glm::vec3 n = Math::Normalize(glm::cross(c - a, b - a));
-		if (glm::dot(n, glm::vec3(0.0f, -1.0f, 0.0f)) >= 0.0f)
-		{
-			continue;
-		}
-
-		float D = -(n.x * a.x + n.y * a.y + n.z * a.z);
-		for (int x = x0; x < x1; ++x)
-		{
-			for (int z = z0; z < z1; ++z)
-			{
-				float y = -(n.x * x + n.z * z + D) / n.y;
-				float dy = h_map[x][z] - y;
-
-				if (dy < 0.0f)
-				{
-					continue;
-				}
-				glm::vec3 o = glm::vec3(x, h_map[x][z], z);
-				float sum_angle = _getAngle(a, b, o);
-				sum_angle += _getAngle(b, c, o);
-				sum_angle += _getAngle(c, d, o);
-				sum_angle += _getAngle(d, a, o);
-
-				if (std::abs(2.0f * std::_Pi_val - sum_angle) < 0.01f)
-				{
-					points.emplace_back(o);
-					normals.push_back(Math::Normalize(n));
-					depths.push_back(dy);
-				}
-			}
-		}
-	}
-
-	depth = 0.0f;
-	glm::vec3 p = glm::vec3(0.0f);
-	glm::vec3 n = glm::vec3(0.0f);
-	int count = std::min(std::min(points.size(), normals.size()), depths.size());
-	for (int i = 0; i < count; ++i)
-	{
-		p += 1.0f / count * points[i];
-		n += 1.0f / count * normals[i];
-		depth += 1.0f / count * depths[i];
-	}
-	n = Math::Normalize(n);
-	return std::make_pair(p, n);
 }

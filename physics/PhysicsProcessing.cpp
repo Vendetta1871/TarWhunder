@@ -5,19 +5,7 @@
 #include "Collider.h"
 
 #include <iostream>
-
-CollisionInfo::CollisionInfo(glm::vec3 p, glm::vec3 n, PhysicalObject* obj0, PhysicalObject* obj1) : 
-	p(p), n(n)
-{
-	this->obj0 = obj0;
-	this->obj1 = obj1;
-}
-
-
-CollisionInfo::~CollisionInfo()
-{
-	//delete[] obj;
-}
+#include <ctime>
 
 float** PhysicsProcessing::h_map;
 int  PhysicsProcessing::h_map_size;
@@ -36,10 +24,10 @@ void PhysicsProcessing::InitPhysics(float** height_map, int n, std::vector<Physi
 void PositionalCorrection(PhysicalObject* A, PhysicalObject* B, glm::vec3 n, float depth)
 {
 	float percent = 0.2; // обычно от 20% до 80%
-	float slop = 0.01; // обычно от 0.01 до 0.1
+	float slop = 0.05; // обычно от 0.01 до 0.1
 	float correction = std::max(depth - slop, 0.0f) / (A->M_1 + B->M_1) * percent;
-	A->r -= A->M_1 * correction * n;
-	B->r += B->M_1 * correction * n;
+	A->Move(-n, A->M_1 * correction);
+	B->Move(n, B->M_1 * correction);
 }
 
 void ResolveCollision(PhysicalObject* obj0, PhysicalObject* obj1, glm::vec3 n, glm::vec3 p)
@@ -79,44 +67,16 @@ void ResolveCollision(PhysicalObject* obj0, PhysicalObject* obj1, glm::vec3 n, g
 	obj1->ApplyImpulse(-j_f * t, p);
 }
 
-bool PhysicsProcessing::Collide(float dt)
+bool PhysicsProcessing::Collide()
 {
-	std::vector<CollisionInfo> collisions;
-
 	for (int i = 0; i < object.size(); ++i)
 	{
-		int x0 = glm::max(object[i]->collider->BoundRect[0], 0);
-		int y0 = object[i]->collider->BoundRect[1];
-		int z0 = glm::max(object[i]->collider->BoundRect[2], 0);
-		int x1 = glm::min(object[i]->collider->BoundRect[3], h_map_size - 1);
-		int y1 = object[i]->collider->BoundRect[4];
-		int z1 = glm::min(object[i]->collider->BoundRect[5], h_map_size - 1);
-
-		bool flag = false;
-		for (int x = x0; x < x1; ++x)
+		float depth;
+		auto info = object[i]->collider->GetCollisionPoints(h_map, h_map_size, depth);
+		if (depth > 0.0f)
 		{
-			for (int z = z0; z < z1; ++z)
-			{
-				if (h_map[x][z] < y0 && h_map[x + 1][z] < y0 &&
-					h_map[x][z + 1] < y0 && h_map[x + 1][z + 1] < y0)
-				{
-					continue;
-				}
-
-				float depth;
-				auto info = Math::GetCollisionPoints(h_map, h_map_size, object[i]->collider->Points, x0, x1, z0, z1, depth);
-				if (depth > 0.0f)
-				{
-					ResolveCollision(terrain, object[i], -info.second, info.first);
-					PositionalCorrection(terrain, object[i], info.second, depth);
-					flag = true;
-					break;
-				}
-			}
-			if (flag)
-			{
-				break;
-			}
+			ResolveCollision(terrain, object[i], -info.second, info.first);
+			PositionalCorrection(terrain, object[i], info.second, depth);
 		}
 
 		for (int j = i + 1; j < object.size(); ++j)
@@ -133,12 +93,21 @@ bool PhysicsProcessing::Collide(float dt)
 
 			float depth;
 			glm::vec3 normal;
-			if (!Math::SAT_OBBOBB(object[i]->collider->Points, object[j]->collider->Points, normal, depth))
+			if (!object[i]->collider->SAT_OBBOBB(object[j]->collider->Points, normal, depth))
 			{
 				continue;
 			}
 
-			glm::vec3 point = Math::GetCollisionPoints_OBBOBB(object[i]->collider->Points, object[j]->collider->Points, normal);
+			glm::vec3 point = object[i]->collider->GetCollisionPoint_OBBOBB(object[j]->collider, normal);
+			if (point.x != point.x)
+			{
+				continue;
+			}
+			if (std::abs(point.x - object[i]->r.x) > 1.1f)
+			{
+				//std::cout << "FUCK YOU: " << glm::length(point - object[i]->r) << std::endl;
+			}
+
 			ResolveCollision(object[i], object[j], -normal, point);
 			PositionalCorrection(object[i], object[j], normal, depth);
 		}
@@ -146,6 +115,9 @@ bool PhysicsProcessing::Collide(float dt)
 
 	return true;
 }
+
+static float collisin_comp_time = 0;
+static int collision_count = 0;
 
 void PhysicsProcessing::ComputePhysics(float time)
 {
@@ -156,15 +128,13 @@ void PhysicsProcessing::ComputePhysics(float time)
 		object[i]->ApplyForce(forces, object[i]->r, time);
 		object[i]->Move(time);
 	}
-	
-	//Link:
-	//auto collisions = 
-	Collide(time);
-	//if (collisions.size() > 0) goto Link;
+
+	time /= 8.0f;
+
+
+	Collide();
+
 
 	// силы сопротивления
-	for (int i = 0; i < object.size(); ++i)
-	{
-		
-	}
+	
 }

@@ -21,6 +21,7 @@
 
 #include "physics/PhysicalObject.h"
 #include "physics/PhysicsProcessing.h"
+#include "physics/Collider.h"
 
 GameScene::GameScene(int width, int height) : Scene(width, height)
 {
@@ -34,17 +35,18 @@ GameScene::GameScene(int width, int height) : Scene(width, height)
 	camY = 0.0f;
 	main_camera = new Camera(glm::vec3(1, 1, 1), glm::radians(70.0f));
 
-	terrainShader = LoadShader("shaders/gourad.vert", "shaders/gourad.fraq");
+	terrainShader = LoadShader("shaders/gouradT.vert", "shaders/gouradT.fraq");
 	objectShader = LoadShader("shaders/gourad.vert", "shaders/gourad.fraq");
-	if (terrainShader == nullptr || objectShader == nullptr)
+	debugShader = LoadShader("shaders/debug.vert", "shaders/debug.fraq");
+	if (terrainShader == nullptr || objectShader == nullptr || debugShader == nullptr)
 	{
 		std::cerr << "Failed to load shaders" << std::endl;
 		status = -1;
 		return;
 	}
 
-	terrainTexture = LoadTexture("resources/img.png");
-	objectTexture = LoadTexture("resources/img.png");
+	terrainTexture = LoadTexture("resources/grass.png");
+	objectTexture = LoadTexture("resources/cube.png");
 	if (terrainTexture == nullptr || objectTexture == nullptr)
 	{
 		std::cerr << "Failed to load texture" << std::endl;
@@ -58,11 +60,15 @@ GameScene::GameScene(int width, int height) : Scene(width, height)
 	for (int i = 0; i < 10; ++i) 
 	{
 		object.push_back(new PhysicalObject(glm::vec3(10, 5 + 7 * i, 10 + 0.8f * i), 2, 2, 2, 1));
+		objectMesh.push_back(RenderMesh::RenderPhysicalObjectMesh(object[i]));
 	}
 
 	int n = 0;
 	float** map = terrain->GetHeightMap(&n);
 	PhysicsProcessing::InitPhysics(map, n, &object);
+
+	isDebug = false;
+	isPhysicsPaused = false;
 }
 
 GameScene::~GameScene()
@@ -86,6 +92,9 @@ void GameScene::Start()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glPointSize(20.0f);
+	glLineWidth(5.0f);
+
 	glClearColor(117 / 255.0f, 187 / 255.0f, 253 / 255.0f, 1);
 
 	while (!Window::GetShouldClose())
@@ -105,14 +114,16 @@ void GameScene::Start()
 
 		HandleEvents(delta);
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		HandleShaders();
 
 		Window::SwapBuffers();
 		Events::PollEvents();
 
-		PhysicsProcessing::ComputePhysics(delta);
+		if (!isPhysicsPaused)
+		{
+			Collider::Collisions.clear();
+			PhysicsProcessing::ComputePhysics(delta);
+		}
 
 		//* FPS COUNTER
 		if (++frames > 1000)
@@ -128,7 +139,7 @@ void GameScene::Start()
 		//*/
 
 		//* FPS LIMIT
-		while (false && delta < 1.0f / 70)
+		while (false && delta < 1.0f / 30)
 		{
 			currentTime = cps * clock();
 			delta = currentTime - lastTime;
@@ -158,6 +169,14 @@ void GameScene::HandleEvents(float delta)
 	if (Events::JustPressed(GLFW_KEY_TAB))
 	{
 		Events::ToogleCursor();
+	}
+	if (Events::JustPressed(GLFW_KEY_LEFT_ALT))
+	{
+		isDebug = !isDebug;
+	}
+	if (Events::JustPressed(GLFW_KEY_LEFT_SHIFT))
+	{
+		isPhysicsPaused = !isPhysicsPaused;
 	}
 
 	if (Events::IsPressed(GLFW_KEY_W))
@@ -206,6 +225,8 @@ void GameScene::HandleEvents(float delta)
 
 void GameScene::HandleShaders()
 {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	terrainShader->Use();
 	terrainShader->UniformMatrix("model", model);
 	terrainShader->UniformMatrix("projview",
@@ -214,17 +235,35 @@ void GameScene::HandleShaders()
 	terrainTexture->Bind();
 	terrainMesh->Draw(GL_TRIANGLES);
 
+
 	objectShader->Use();
 	objectShader->UniformMatrix("model", model);
 	objectShader->UniformMatrix("projview",
 		main_camera->GetProjection() * main_camera->GetView());
 	objectShader->UniformVector("lightPos", light_pos);
 	objectTexture->Bind();
-	for (auto& obj : object)
+	for (int i = 0; i < 10; ++i)
 	{
-		delete objectMesh;
-		objectMesh = RenderMesh::RenderPhysicalObjectMesh(obj);
-		objectMesh->Draw(GL_TRIANGLES);
+		objectShader->UniformVector("move", object[i]->r);
+		objectShader->UniformMatrix("rotation", object[i]->A);
+		objectMesh[i]->Draw(GL_TRIANGLES);
+	}
+
+	if (isDebug) {
+		debugShader->Use();
+		debugShader->UniformMatrix("model", model);
+		debugShader->UniformMatrix("projview",
+			main_camera->GetProjection() * main_camera->GetView());
+
+		debugShader->UniformVector("clr", glm::vec3(0.0f, 1.0f, 0.0f));
+		Mesh* debugMesh = RenderMesh::RenderDebugPhysicsMesh(PhysicsProcessing::object);
+		debugMesh->Draw(GL_LINES);
+		delete debugMesh;
+
+		debugShader->UniformVector("clr", glm::vec3(0.8f, 0.0f, 0.8f));
+		debugMesh = RenderMesh::RenderDebugPhysicsMesh(Collider::Collisions);
+		debugMesh->Draw(GL_POINTS);
+		delete debugMesh;
 	}
 }
 

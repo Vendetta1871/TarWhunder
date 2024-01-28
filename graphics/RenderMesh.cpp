@@ -6,6 +6,7 @@
 #include "../Terrain.h"
 #include "../physics/Math.h"
 #include "../physics/PhysicalObject.h"
+#include "../physics/Collider.h"
 
 #include "../ObjectMeshArrays.h"
 
@@ -82,35 +83,56 @@ float* RenderMesh::GetObjectMesh(int n)
 Mesh* RenderMesh::RenderPhysicalObjectMesh(PhysicalObject* object)
 {
 	int type = object->type;
-	int count = sizeCube * 8;
-	float* vertixes = new float[count];
-	
-	glm::vec3 move = object->r;
-	glm::mat3 rot = object->A;
-	for (int i = 0; i < count; i += 8)
+	Mesh* mesh = new Mesh(vertixesCube, sizeCube, attrs);
+	return mesh;
+}
+
+Mesh* RenderMesh::RenderDebugPhysicsMesh(const std::vector<PhysicalObject*>& object)
+{
+	int a[] = { 3, 0 };
+	int count = object.size() * 36;
+	float* vertixes = new float[count * 3];
+	int j = 0;
+	for (auto obj : object)
 	{
-		glm::vec3 point = move + rot * glm::vec3(
-			vertixesCube[i + 0],
-			vertixesCube[i + 1],
-			vertixesCube[i + 2]);
+		for (int i = 0; i < 8; ++i)
+		{
+			for (int k = i + 1; k < 8; ++k)
+			{
+				if (i + k == 7 || (k - i) % 3 == 0)
+				{
+					continue;
+				}
 
-		vertixes[i + 0] = point.x;
-		vertixes[i + 1] = point.y;
-		vertixes[i + 2] = point.z;
-		vertixes[i + 3] = vertixesCube[i + 3];
-		vertixes[i + 4] = vertixesCube[i + 4];
-
-		point = rot * glm::vec3(
-			vertixesCube[i + 5],
-			vertixesCube[i + 6],
-			vertixesCube[i + 7]);
-		
-		vertixes[i + 5] = point.x;
-		vertixes[i + 6] = point.y;
-		vertixes[i + 7] = point.z;
+				vertixes[j + 0] = obj->collider->Points[i].x;
+				vertixes[j + 1] = obj->collider->Points[i].y;
+				vertixes[j + 2] = obj->collider->Points[i].z;
+				vertixes[j + 3] = obj->collider->Points[k].x;
+				vertixes[j + 4] = obj->collider->Points[k].y;
+				vertixes[j + 5] = obj->collider->Points[k].z;
+				j += 6;
+			}
+		}
 	}
+	Mesh* mesh = new Mesh(vertixes, count, a);
+	delete[] vertixes;
+	return mesh;
+}
 
-	Mesh* mesh = new Mesh(vertixes, sizeCube, attrs);
+Mesh* RenderMesh::RenderDebugPhysicsMesh(const std::vector<glm::vec3>& collisions)
+{
+	int a[] = { 3, 0 };
+	int count = collisions.size();
+	float* vertixes = new float[count * 3];
+	int i = 0;
+	for (auto& col : collisions)
+	{
+		vertixes[i + 0] = col.x;
+		vertixes[i + 1] = col.y;
+		vertixes[i + 2] = col.z;
+		i += 3;
+	}
+	Mesh* mesh = new Mesh(vertixes, count, a);
 	delete[] vertixes;
 	return mesh;
 }
