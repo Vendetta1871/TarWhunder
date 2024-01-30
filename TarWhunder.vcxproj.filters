@@ -18,99 +18,99 @@
     <ClCompile Include="Main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="system\Events.cpp">
+    <ClCompile Include="src\mathf\Collider.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="system\Window.cpp">
+    <ClCompile Include="src\scene\GameScene.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\Mesh.cpp">
+    <ClCompile Include="src\graphics\Mesh.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\Shader.cpp">
+    <ClCompile Include="src\physics\PhysicalObject.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\Texture.cpp">
+    <ClCompile Include="src\physics\PhysicsProcessing.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="system\Camera.cpp">
+    <ClCompile Include="src\graphics\RenderMesh.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Terrain.cpp">
+    <ClCompile Include="src\scene\Scene.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="physics\Math.cpp">
+    <ClCompile Include="src\graphics\Shader.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="physics\PhysicalObject.cpp">
+    <ClCompile Include="src\gameobject\Terrain.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\RenderMesh.cpp">
+    <ClCompile Include="src\gameobject\TerrainGenerator.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="TerrainGenerator.cpp">
+    <ClCompile Include="src\graphics\Texture.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="physics\PhysicsProcessing.cpp">
+    <ClCompile Include="src\system\Window.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="GameScene.cpp">
+    <ClCompile Include="src\system\Camera.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="src\system\Events.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="physics\Collider.cpp">
+    <ClCompile Include="src\mathf\MathF.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="system\Events.h">
+    <ClInclude Include="include\gameobject\Terrain.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="system\Window.h">
+    <ClInclude Include="include\gameobject\TerrainGenerator.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="system\Camera.h">
+    <ClInclude Include="include\graphics\Mesh.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\Mesh.h">
+    <ClInclude Include="include\graphics\RenderMesh.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\Shader.h">
+    <ClInclude Include="include\graphics\Shader.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\Texture.h">
+    <ClInclude Include="include\graphics\Texture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Terrain.h">
+    <ClInclude Include="include\mathf\Collider.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="physics\Math.h">
+    <ClInclude Include="include\physics\PhysicalObject.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\RenderMesh.h">
+    <ClInclude Include="include\physics\PhysicsProcessing.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainGenerator.h">
+    <ClInclude Include="include\scene\GameScene.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="physics\PhysicsProcessing.h">
+    <ClInclude Include="include\scene\Scene.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="physics\PhysicalObject.h">
+    <ClInclude Include="include\system\Camera.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="include\system\Events.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="GameScene.h">
+    <ClInclude Include="include\system\Window.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectMeshArrays.h">
+    <ClInclude Include="include\mathf\MathF.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="physics\Collider.h">
+    <ClInclude Include="resources\models\ObjectMeshArrays.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

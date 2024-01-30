@@ -1,12 +1,12 @@
-#include "Scene.h"
-#include "GameScene.h"
-
-#include <glm/glm.hpp>
-#include <iostream>
+#include "include/scene/Scene.h"
+#include "include/scene/GameScene.h"
 
 #include <time.h>
 #include <vector>
 #include <list>
+#include <iostream>
+
+#include <glm/glm.hpp>
 
 template <typename T>
 class cont
@@ -76,7 +76,6 @@ int main()
 		return -1;
 	}
 	scene->Start();
-	scene->Final();
 	delete scene;
 
 	return 0;
